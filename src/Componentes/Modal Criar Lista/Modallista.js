@@ -7,13 +7,13 @@ import {
   setShowModal,
 } from "../../redux/cardSlice";
 
-const ModalLista = ({ show }) => {
+const ModalLista = ({ show, onClose }) => {
   const dispatch = useDispatch();
   const { titulo, descricao, imagem } = useSelector((state) => state.card.modalData);
   const cards = useSelector((state) => state.card.cards);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Previne o comportamento padrão de recarregar a página
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -53,7 +53,7 @@ const ModalLista = ({ show }) => {
               <button
                 type="button"
                 className="btn-close"
-                onClick={() => dispatch(setShowModal(false))}
+                onClick={onClose}
               ></button>
             </div>
             <div className="modal-body">
@@ -111,13 +111,14 @@ const ModalLista = ({ show }) => {
             </div>
             <div className="modal-footer">
               <button
+                type="button"
                 className="btn btn-secondary"
                 onClick={() => dispatch(setShowModal(false))}
               >
                 Cancelar
               </button>
               <button
-                type="submit"
+                type="submit" // O botão agora é do tipo "submit"
                 className="btn"
                 style={{
                   backgroundColor: "#dc3545",
