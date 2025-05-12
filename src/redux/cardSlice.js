@@ -10,6 +10,9 @@ const initialState = {
     imagem: null,
   },
   progresso: {}, // Progresso de cada card (id -> { total, adquiridos })
+  listaAtual: null, // Dados da lista atual
+  itens: [], // Itens da lista atual
+  mostrarModalItem: false, // Estado do modal de adicionar item
 };
 
 const cardSlice = createSlice({
@@ -41,6 +44,30 @@ const cardSlice = createSlice({
       const { id, total, adquiridos } = action.payload;
       state.progresso[id] = { total, adquiridos };
     },
+    setListaAtual(state, action) {
+      state.listaAtual = action.payload;
+    },
+    setItens(state, action) {
+      state.itens = action.payload;
+    },
+    addItem(state, action) {
+      state.itens.push(action.payload);
+    },
+    toggleItemAdquirido(state, action) {
+      const index = action.payload;
+      if (state.itens[index]) {
+        state.itens[index].adquirido = !state.itens[index].adquirido;
+      }
+    },
+    removeItem(state, action) {
+      const index = action.payload;
+      if (state.itens[index]) {
+        state.itens.splice(index, 1);
+      }
+    },
+    setMostrarModalItem(state, action) {
+      state.mostrarModalItem = action.payload;
+    },
   },
 });
 
@@ -53,5 +80,11 @@ export const {
   setModalData,
   resetModalData,
   updateCardProgress,
+  setListaAtual,
+  setItens,
+  addItem,
+  toggleItemAdquirido,
+  removeItem,
+  setMostrarModalItem,
 } = cardSlice.actions;
 export default cardSlice.reducer;
