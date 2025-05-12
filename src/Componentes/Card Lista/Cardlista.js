@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { updateCardProgress } from "../../redux/cardSlice";
 
 const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
-  const [total, setTotal] = useState(0);
-  const [adquiridos, setAdquiridos] = useState(0);
+  const dispatch = useDispatch();
+  const progresso = useSelector((state) => state.card.progresso[id]) || { total: 0, adquiridos: 0 };
 
   useEffect(() => {
     const itens = JSON.parse(localStorage.getItem(`itens_${id}`)) || [];
-    setTotal(itens.length);
-    setAdquiridos(itens.filter((item) => item.adquirido).length);
-  }, []);
+    const total = itens.length;
+    const adquiridos = itens.filter((item) => item.adquirido).length;
 
-  const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
+    dispatch(updateCardProgress({ id, total, adquiridos }));
+  }, [id, dispatch]);
+
+  const progressoPercentual = progresso.total > 0 ? (progresso.adquiridos / progresso.total) * 100 : 0;
 
   return (
     <div
@@ -66,7 +70,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
         {/* Parte inferior: progresso e botões */}
         <div>
           <p>
-            <strong>Itens:</strong> {adquiridos}/{total}
+            <strong>Itens:</strong> {progresso.adquiridos}/{progresso.total}
           </p>
           <div
             className="progress-bar"
@@ -81,7 +85,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
               style={{
                 display: "block",
                 height: "100%",
-                width: `${progresso}%`,
+                width: `${progressoPercentual}%`,
                 backgroundColor: "#dc3545",
                 borderRadius: "10px",
                 transition: "width 0.3s ease",

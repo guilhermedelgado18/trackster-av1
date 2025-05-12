@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  cards: [],
+  cards: [], // Lista de cards
   showModal: false,
   cardParaExcluir: null,
   modalData: {
@@ -9,6 +9,7 @@ const initialState = {
     descricao: "",
     imagem: null,
   },
+  progresso: {}, // Progresso de cada card (id -> { total, adquiridos })
 };
 
 const cardSlice = createSlice({
@@ -36,6 +37,10 @@ const cardSlice = createSlice({
     resetModalData(state) {
       state.modalData = { titulo: "", descricao: "", imagem: null };
     },
+    updateCardProgress(state, action) {
+      const { id, total, adquiridos } = action.payload;
+      state.progresso[id] = { total, adquiridos };
+    },
   },
 });
 
@@ -47,5 +52,6 @@ export const {
   setCardParaExcluir,
   setModalData,
   resetModalData,
+  updateCardProgress,
 } = cardSlice.actions;
 export default cardSlice.reducer;
