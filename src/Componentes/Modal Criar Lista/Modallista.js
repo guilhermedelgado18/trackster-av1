@@ -20,7 +20,7 @@ const ModalLista = ({ show, onClose }) => {
       const novaLista = {
         id: Date.now(),
         titulo,
-        descricao,
+        descricao: descricao || "Sem descrição",
         imagem: imagem ? reader.result : null,
       };
 

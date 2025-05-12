@@ -13,6 +13,13 @@ const initialState = {
   listaAtual: null, // Dados da lista atual
   itens: [], // Itens da lista atual
   mostrarModalItem: false, // Estado do modal de adicionar item
+  itens: [], // Itens da lista atual
+  mostrarModalItem: false, // Estado do modal de adicionar item
+  modalItemData: {
+    nome: "",
+    descricao: "",
+    imagem: null,
+  },
 };
 
 const cardSlice = createSlice({
@@ -68,6 +75,12 @@ const cardSlice = createSlice({
     setMostrarModalItem(state, action) {
       state.mostrarModalItem = action.payload;
     },
+    setModalItemData(state, action) {
+      state.modalItemData = { ...state.modalItemData, ...action.payload };
+    },
+    resetModalItemData(state) {
+      state.modalItemData = { nome: "", descricao: "", imagem: null };
+    },
   },
 });
 
@@ -86,5 +99,7 @@ export const {
   toggleItemAdquirido,
   removeItem,
   setMostrarModalItem,
+  setModalItemData,
+  resetModalItemData
 } = cardSlice.actions;
 export default cardSlice.reducer;

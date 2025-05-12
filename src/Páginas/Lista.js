@@ -71,15 +71,7 @@ const Lista = () => {
       <Banner />
       <div className="container py-4">
         <BotaoAdicionarItem onClick={() => dispatch(setMostrarModalItem(true))} />
-        <ModalAdicionarItem
-          show={mostrarModalItem}
-          onClose={() => dispatch(setMostrarModalItem(false))}
-          onAdd={(novoItem) => {
-            dispatch(addItem(novoItem));
-            salvarItens([...itens, novoItem]);
-            dispatch(setMostrarModalItem(false));
-          }}
-        />
+        <ModalAdicionarItem show={mostrarModalItem} />
         <button
           className="btn btn-outline-secondary mb-3"
           id="btn-voltar"

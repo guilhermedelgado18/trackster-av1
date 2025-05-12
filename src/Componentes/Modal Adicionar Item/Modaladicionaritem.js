@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setModalItemData,
+  resetModalItemData,
+  addItem,
+  setMostrarModalItem,
+} from "../../redux/cardSlice";
 
-const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [imagem, setImagem] = useState(null);
+const ModalAdicionarItem = ({ show }) => {
+  const dispatch = useDispatch();
+  const { nome, descricao, imagem } = useSelector((state) => state.card.modalItemData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,11 +24,9 @@ const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
         imagem: imagem ? reader.result : null,
         adquirido: false,
       };
-      onAdd(novoItem);
-      setNome("");
-      setDescricao("");
-      setImagem(null);
-      onClose();
+      dispatch(addItem(novoItem));
+      dispatch(resetModalItemData());
+      dispatch(setMostrarModalItem(false));
     };
 
     if (imagem) {
@@ -44,7 +48,11 @@ const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
           <form className="modal-content" onSubmit={handleSubmit}>
             <div className="modal-header">
               <h5 className="modal-title">Novo Item</h5>
-              <button type="button" className="btn-close" onClick={onClose}></button>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => dispatch(setMostrarModalItem(false))}
+              ></button>
             </div>
             <div className="modal-body">
               <div className="mb-3">
@@ -56,7 +64,9 @@ const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
                   required
                   maxLength="50"
                   value={nome}
-                  onChange={(e) => setNome(e.target.value)}
+                  onChange={(e) =>
+                    dispatch(setModalItemData({ nome: e.target.value }))
+                  }
                 />
               </div>
               <div className="mb-3">
@@ -67,7 +77,9 @@ const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
                   maxLength="150"
                   style={{ height: '6.25rem', resize: 'none' }}
                   value={descricao}
-                  onChange={(e) => setDescricao(e.target.value)}
+                  onChange={(e) =>
+                    dispatch(setModalItemData({ descricao: e.target.value }))
+                  }
                 />
                 <div className="text-end text-muted mt-1" style={{ fontSize: '0.875rem' }}>
                   {descricao.length}/150
@@ -80,12 +92,20 @@ const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
                   className="form-control"
                   id="imagemItem"
                   accept="image/*"
-                  onChange={(e) => setImagem(e.target.files[0])}
+                  onChange={(e) =>
+                    dispatch(setModalItemData({ imagem: e.target.files[0] }))
+                  }
                 />
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => dispatch(setMostrarModalItem(false))}
+              >
+                Cancelar
+              </button>
               <button type="submit" className="btn btn-danger">
                 Adicionar
               </button>
@@ -98,7 +118,7 @@ const ModalAdicionarItem = ({ show, onClose, onAdd }) => {
         <div
           className="modal-backdrop fade show"
           style={{ zIndex: 1040 }}
-          onClick={onClose}
+          onClick={() => dispatch(setMostrarModalItem(false))}
         ></div>
       )}
     </>
