@@ -1,0 +1,107 @@
+:root {
+    --vermelho: #dc3545;
+    --vermelho-rover: #b02a37;
+  }
+
+  .progress-bar {
+    height: 15px;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  .progress-bar span {
+    display: block;
+    height: 100%;
+    background-color: var(--vermelho);
+    border-radius: 10px;
+  }
+  .card-text {
+    height: 5rem;
+    overflow: auto;
+  }
+  .img-placeholder {
+    background-color: #ccc;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555;
+    font-weight: bold;
+  }
+
+  #btn-see-list {
+      background-color: white;
+      color: var(--vermelho);
+      border-color: var(--vermelho);
+  }
+
+  #btn-see-list:hover {
+      background-color: var(--vermelho);
+      color: white;
+  }
+
+  #btn-add {
+      background-color: var(--vermelho);
+      border-color: var(--vermelho);
+      color: white;
+      border-radius: 50%;
+      position: fixed;
+      font-size: 2rem;
+      font-weight: 500;
+      width: 4rem;
+      height: 4rem;
+      top: 90%;
+      left: 95%;
+  }
+
+  #btn-ver-lista {
+    background-color: "white";
+    color: var(--vermelho);
+    border: "1px solid";
+    border-color: var(--vermelho);
+  }
+  
+
+  #btn-ver-lista:hover {
+    color: white;
+    background-color: var(--vermelho);
+  }
+
+  #btn-add:hover {
+    background-color: var(--vermelho-rover);
+  }
+
+  #btn-add-modal {
+    background-color: var(--vermelho);
+    border: none;
+  }
+
+  #btn-add-modal:hover {
+    background-color: var(--vermelho-rover);
+  }
+
+  #confirmarAdicionar{
+    background-color: var(--vermelho);
+    border: none;
+  }
+
+  #confirmarAdicionar:hover{
+    background-color: var(--vermelho-rover);
+  }
+
+  #topbar {
+      background-color: var(--vermelho);
+      height: 5rem;
+      font-size: 4rem;
+      
+  }
+
+  .navbar-brand {
+      color: white;
+      font-size: 2rem;
+      text-align: center;
+  }
+
+  .navbar-brand:hover {
+      color: white;
+  }
