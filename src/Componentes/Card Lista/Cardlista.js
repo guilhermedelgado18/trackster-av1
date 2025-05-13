@@ -15,6 +15,8 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
     dispatch(updateCardProgress({ id, total, adquiridos }));
   }, [id, dispatch]);
 
+  console.log("ID do Card (tipo):", id, typeof id);
+
   const progressoPercentual = progresso.total > 0 ? (progresso.adquiridos / progresso.total) * 100 : 0;
 
   return (
@@ -94,7 +96,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
           </div>
           <div className="d-flex justify-content-between">
             <Link
-              to={`/lista/${id}`}
+              to={`/lista/${id}`} // O ID já está sendo passado como número
               className="btn"
               style={{
                 backgroundColor: "white",
@@ -106,7 +108,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
             </Link>
             <button
               className="btn btn-danger"
-              onClick={() => onSolicitarExclusao(id)}
+              onClick={() => onSolicitarExclusao(id)} // O ID já está sendo passado como número
             >
               Excluir
             </button>

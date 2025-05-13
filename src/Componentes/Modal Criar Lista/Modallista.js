@@ -3,37 +3,60 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setModalData,
   resetModalData,
-  addCard,
   setShowModal,
+  addCard,
 } from "../../redux/cardSlice";
 
 const ModalLista = ({ show, onClose }) => {
   const dispatch = useDispatch();
   const { titulo, descricao, imagem } = useSelector((state) => state.card.modalData);
-  const cards = useSelector((state) => state.card.cards);
+
+  const handleAdd = async (novaLista) => {
+    try {
+      const response = await fetch("http://localhost:3001/listas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novaLista),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao salvar a lista");
+      }
+
+      const savedLista = await response.json();
+      dispatch(addCard(savedLista)); // Atualiza o estado global com a nova lista
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao salvar a lista");
+    }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Previne o comportamento padrão de recarregar a página
+    e.preventDefault();
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const novaLista = {
-        id: Date.now(),
-        titulo,
-        descricao: descricao || "Sem descrição",
-        imagem: imagem ? reader.result : null,
-      };
-
-      dispatch(addCard(novaLista));
-      localStorage.setItem("listas", JSON.stringify([...cards, novaLista]));
-      dispatch(resetModalData());
-      dispatch(setShowModal(false));
+    const novaLista = {
+      id: String(Date.now()),
+      titulo,
+      descricao: descricao || "Sem descrição",
+      imagem: null, // Inicialmente null, será preenchida após a conversão
+      itens: [],
     };
 
     if (imagem) {
-      reader.readAsDataURL(imagem);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        novaLista.imagem = reader.result; // Armazena a imagem como Base64
+        handleAdd(novaLista); // Chama a função para salvar no servidor
+        dispatch(resetModalData());
+        dispatch(setShowModal(false));
+      };
+      reader.readAsDataURL(imagem); // Converte a imagem para Base64
     } else {
-      reader.onloadend();
+      handleAdd(novaLista); // Salva a lista sem imagem
+      dispatch(resetModalData());
+      dispatch(setShowModal(false));
     }
   };
 
@@ -118,7 +141,7 @@ const ModalLista = ({ show, onClose }) => {
                 Cancelar
               </button>
               <button
-                type="submit" // O botão agora é do tipo "submit"
+                type="submit"
                 className="btn"
                 style={{
                   backgroundColor: "#dc3545",

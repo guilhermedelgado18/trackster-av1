@@ -33,6 +33,7 @@ const cardSlice = createSlice({
       state.cards.push(action.payload);
     },
     deleteCard(state, action) {
+      console.log("Removendo card com ID:", action.payload); // Log para debug
       state.cards = state.cards.filter((card) => card.id !== action.payload);
     },
     setShowModal(state, action) {

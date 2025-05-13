@@ -8,9 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setListaAtual,
   setItens,
-  addItem,
-  toggleItemAdquirido,
-  removeItem,
   setMostrarModalItem,
 } from "../redux/cardSlice";
 
@@ -26,40 +23,28 @@ const Lista = () => {
   }));
 
   useEffect(() => {
-    const listasSalvas = JSON.parse(localStorage.getItem("listas")) || [];
-    const listaSelecionada = listasSalvas.find((l) => l.id === Number(id));
+    const fetchLista = async () => {
+      try {
+        const numericId = Number(id); // Converte o ID para número
+        console.log("Buscando lista com ID:", numericId, typeof numericId); // Log do ID e tipo
+        const response = await fetch(`http://localhost:3001/listas?id=${numericId}`);
+        console.log("Resposta da API:", response); // Log da resposta
+        if (!response.ok) {
+          throw new Error("Erro ao buscar a lista");
+        }
+        const data = await response.json();
+        console.log("Dados recebidos:", data); // Log dos dados
+        dispatch(setListaAtual(data));
+        dispatch(setItens(data.itens || []));
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao buscar a lista");
+        navigate("/");
+      }
+    };
 
-    if (!listaSelecionada) {
-      alert("Lista não encontrada");
-      navigate("/");
-      return;
-    }
-
-    dispatch(setListaAtual(listaSelecionada));
-    const itensSalvos = JSON.parse(localStorage.getItem(`itens_${id}`)) || [];
-    dispatch(setItens(itensSalvos));
+    fetchLista();
   }, [id, navigate, dispatch]);
-
-  const salvarItens = (novosItens) => {
-    localStorage.setItem(`itens_${id}`, JSON.stringify(novosItens));
-    dispatch(setItens(novosItens));
-  };
-
-  const alternarAdquirido = (index) => {
-    const novosItens = itens.map((item, i) =>
-      i === index ? { ...item, adquirido: !item.adquirido } : item
-    );
-    salvarItens(novosItens);
-  };
-
-  const excluirItem = (index) => {
-    const confirmar = window.confirm("Tem certeza que deseja excluir este item?");
-    if (!confirmar) return;
-
-    dispatch(removeItem(index));
-    const novosItens = itens.filter((_, i) => i !== index);
-    salvarItens(novosItens);
-  };
 
   if (!listaAtual) return null;
 
@@ -115,7 +100,7 @@ const Lista = () => {
                 type="checkbox"
                 className="form-check-input me-2"
                 checked={item.adquirido}
-                onChange={() => alternarAdquirido(index)}
+                onChange={() => {}}
               />
 
               <img
@@ -149,13 +134,6 @@ const Lista = () => {
                   value={item.descricao || "Sem descrição"}
                 ></textarea>
               </div>
-
-              <button
-                className="btn btn-sm btn-outline-danger ms-2"
-                onClick={() => excluirItem(index)}
-              >
-                Remover
-              </button>
             </li>
           ))}
         </ul>
