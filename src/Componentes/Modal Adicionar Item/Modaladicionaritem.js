@@ -5,18 +5,44 @@ import {
   resetModalItemData,
   addItem,
   setMostrarModalItem,
+  setItens,
 } from "../../redux/cardSlice";
 
 const ModalAdicionarItem = ({ show }) => {
   const dispatch = useDispatch();
   const { nome, descricao, imagem } = useSelector((state) => state.card.modalItemData);
+  const itens = useSelector((state) => state.card.itens);
+  const listaAtual = useSelector((state) => state.card.listaAtual);
+
+  const handleAdicionarItem = async (novoItem) => {
+    try {
+      const novosItens = [...itens, novoItem];
+
+      const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itens: novosItens }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao adicionar o item no backend");
+      }
+
+      dispatch(setItens(novosItens));
+    } catch (error) {
+      console.error("Erro ao adicionar o item:", error);
+      alert("Erro ao adicionar o item");
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!nome.trim()) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => {
+    reader.onloadend = async () => {
       const novoItem = {
         id: Date.now(),
         nome: nome.trim(),
@@ -24,7 +50,7 @@ const ModalAdicionarItem = ({ show }) => {
         imagem: imagem ? reader.result : null,
         adquirido: false,
       };
-      dispatch(addItem(novoItem));
+      await handleAdicionarItem(novoItem);
       dispatch(resetModalItemData());
       dispatch(setMostrarModalItem(false));
     };

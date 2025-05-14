@@ -48,7 +48,7 @@ const cardSlice = createSlice({
     resetModalData(state) {
       state.modalData = { titulo: "", descricao: "", imagem: null };
     },
-    updateCardProgress(state, action) {
+    updateCardProgress: (state, action) => {
       const { id, total, adquiridos } = action.payload;
       state.progresso[id] = { total, adquiridos };
     },

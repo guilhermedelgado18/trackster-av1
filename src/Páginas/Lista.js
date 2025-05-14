@@ -9,6 +9,7 @@ import {
   setListaAtual,
   setItens,
   setMostrarModalItem,
+  updateCardProgress,
 } from "../redux/cardSlice";
 
 const Lista = () => {
@@ -25,26 +26,88 @@ const Lista = () => {
   useEffect(() => {
     const fetchLista = async () => {
       try {
-        const numericId = Number(id); // Converte o ID para número
-        console.log("Buscando lista com ID:", numericId, typeof numericId); // Log do ID e tipo
-        const response = await fetch(`http://localhost:3001/listas?id=${numericId}`);
-        console.log("Resposta da API:", response); // Log da resposta
+        const response = await fetch(`http://localhost:3001/listas/${id}`);
         if (!response.ok) {
           throw new Error("Erro ao buscar a lista");
         }
         const data = await response.json();
-        console.log("Dados recebidos:", data); // Log dos dados
+
         dispatch(setListaAtual(data));
         dispatch(setItens(data.itens || []));
+
+        // Atualiza o progresso no Redux
+        const total = data.itens?.length || 0;
+        const adquiridos = data.itens?.filter((item) => item.adquirido).length || 0;
+        dispatch(updateCardProgress({ id: data.id, total, adquiridos }));
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao buscar a lista:", error);
         alert("Erro ao buscar a lista");
-        navigate("/");
       }
     };
 
     fetchLista();
-  }, [id, navigate, dispatch]);
+  }, [id, dispatch]);
+
+  const handleToggleAdquirido = async (index) => {
+    try {
+      const novosItens = itens.map((item, i) =>
+        i === index ? { ...item, adquirido: !item.adquirido } : item
+      );
+
+      const adquiridos = novosItens.filter((item) => item.adquirido).length;
+      const progresso = novosItens.length > 0 ? (adquiridos / novosItens.length) * 100 : 0;
+
+      // Atualiza o backend
+      const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itens: novosItens }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao atualizar o item no backend");
+      }
+
+      // Atualiza o estado global
+      dispatch(setItens(novosItens));
+      dispatch(updateCardProgress({ id: listaAtual.id, total: novosItens.length, adquiridos }));
+    } catch (error) {
+      console.error("Erro ao atualizar o item:", error);
+      alert("Erro ao atualizar o item");
+    }
+  };
+
+  const handleRemoverItem = async (index) => {
+    const confirmar = window.confirm("Tem certeza de que deseja remover este item?");
+    if (!confirmar) return;
+
+    try {
+      const novosItens = itens.filter((_, i) => i !== index);
+
+      const adquiridos = novosItens.filter((item) => item.adquirido).length;
+      const progresso = novosItens.length > 0 ? (adquiridos / novosItens.length) * 100 : 0;
+
+      const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itens: novosItens }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao remover o item no backend");
+      }
+
+      dispatch(setItens(novosItens));
+      dispatch(updateCardProgress({ id: listaAtual.id, total: novosItens.length, adquiridos }));
+    } catch (error) {
+      console.error("Erro ao remover o item:", error);
+      alert("Erro ao remover o item");
+    }
+  };
 
   if (!listaAtual) return null;
 
@@ -100,7 +163,7 @@ const Lista = () => {
                 type="checkbox"
                 className="form-check-input me-2"
                 checked={item.adquirido}
-                onChange={() => {}}
+                onChange={() => handleToggleAdquirido(index)} // Chama a função ao clicar
               />
 
               <img
@@ -134,6 +197,13 @@ const Lista = () => {
                   value={item.descricao || "Sem descrição"}
                 ></textarea>
               </div>
+              
+              <button
+              className="btn btn-sm btn-outline-danger ms-2"
+              onClick={() => handleRemoverItem(index)} // Chama a função ao clicar
+            >
+              Remover
+            </button>
             </li>
           ))}
         </ul>

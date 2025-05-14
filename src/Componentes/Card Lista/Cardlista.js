@@ -7,26 +7,12 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
   const dispatch = useDispatch();
   const progresso = useSelector((state) => state.card.progresso[id]) || { total: 0, adquiridos: 0 };
 
-  useEffect(() => {
-    const itens = JSON.parse(localStorage.getItem(`itens_${id}`)) || [];
-    const total = itens.length;
-    const adquiridos = itens.filter((item) => item.adquirido).length;
-
-    dispatch(updateCardProgress({ id, total, adquiridos }));
-  }, [id, dispatch]);
-
   console.log("ID do Card (tipo):", id, typeof id);
 
   const progressoPercentual = progresso.total > 0 ? (progresso.adquiridos / progresso.total) * 100 : 0;
 
   return (
-    <div
-      className="card d-flex flex-column"
-      style={{
-        height: "420px", // altura fixa do card
-        width: "100%",
-      }}
-    >
+    <div className="card d-flex flex-column" style={{ height: "420px", width: "100%" }}>
       {/* Imagem ou placeholder */}
       <div style={{ height: "170px", overflow: "hidden" }}>
         {imagem ? (
@@ -55,21 +41,13 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
 
       {/* Conteúdo */}
       <div className="card-body d-flex flex-column justify-content-between">
-        {/* Parte superior: título + descrição */}
         <div>
           <h5 className="card-title">{titulo}</h5>
-          <p
-            className="card-text mb-3"
-            style={{
-              maxHeight: "5rem",
-              overflowY: "auto",
-            }}
-          >
+          <p className="card-text mb-3" style={{ maxHeight: "5rem", overflowY: "auto" }}>
             {descricao}
           </p>
         </div>
 
-        {/* Parte inferior: progresso e botões */}
         <div>
           <p>
             <strong>Itens:</strong> {progresso.adquiridos}/{progresso.total}
@@ -96,7 +74,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
           </div>
           <div className="d-flex justify-content-between">
             <Link
-              to={`/lista/${id}`} // O ID já está sendo passado como número
+              to={`/lista/${id}`}
               className="btn"
               style={{
                 backgroundColor: "white",
@@ -108,7 +86,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
             </Link>
             <button
               className="btn btn-danger"
-              onClick={() => onSolicitarExclusao(id)} // O ID já está sendo passado como número
+              onClick={() => onSolicitarExclusao(id)}
             >
               Excluir
             </button>
