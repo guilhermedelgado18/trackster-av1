@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import './Lista.css';
 import Banner from "../Componentes/Banner/Banner";
 import BotaoAdicionarItem from "../Componentes/Botão Adicionar Item/Botaoadicionaritem";
 import ModalAdicionarItem from "../Componentes/Modal Adicionar Item/Modaladicionaritem";
 import { useDispatch, useSelector } from "react-redux";
+import { updateCard } from "../redux/cardSlice";
 import {
   setListaAtual,
   setItens,
@@ -50,12 +51,17 @@ const Lista = () => {
 
   const handleToggleAdquirido = async (index) => {
     try {
+      // Atualiza o estado local dos itens
       const novosItens = itens.map((item, i) =>
         i === index ? { ...item, adquirido: !item.adquirido } : item
       );
 
+      // Recalcula o número de itens adquiridos
+      const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
-      const progresso = novosItens.length > 0 ? (adquiridos / novosItens.length) * 100 : 0;
+
+      // Recalcula o progresso
+      const progresso = listaAtual.total > 0 ? (adquiridos / listaAtual.total) * 100 : 0;
 
       // Atualiza o backend
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
@@ -63,7 +69,7 @@ const Lista = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ itens: novosItens }),
+        body: JSON.stringify({ itens: novosItens, adquiridos, progresso }),
       });
 
       if (!response.ok) {
@@ -72,7 +78,14 @@ const Lista = () => {
 
       // Atualiza o estado global
       dispatch(setItens(novosItens));
-      dispatch(updateCardProgress({ id: listaAtual.id, total: novosItens.length, adquiridos }));
+      dispatch(setListaAtual({ ...listaAtual, adquiridos, progresso })); // Atualiza o progresso no estado global
+      dispatch(updateCard({
+        ...listaAtual,
+        itens: novosItens,
+        total,
+        adquiridos,
+        progresso
+      }));
     } catch (error) {
       console.error("Erro ao atualizar o item:", error);
       alert("Erro ao atualizar o item");
@@ -84,25 +97,39 @@ const Lista = () => {
     if (!confirmar) return;
 
     try {
+      // Remove o item do array
       const novosItens = itens.filter((_, i) => i !== index);
 
+      // Recalcula o total e os adquiridos
+      const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
-      const progresso = novosItens.length > 0 ? (adquiridos / novosItens.length) * 100 : 0;
 
+      // Recalcula o progresso
+      const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
+
+      // Atualiza o backend
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ itens: novosItens }),
+        body: JSON.stringify({ itens: novosItens, total, adquiridos, progresso }),
       });
 
       if (!response.ok) {
         throw new Error("Erro ao remover o item no backend");
       }
 
+      // Atualiza o estado global
       dispatch(setItens(novosItens));
-      dispatch(updateCardProgress({ id: listaAtual.id, total: novosItens.length, adquiridos }));
+      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso })); // Atualiza o progresso no estado global
+      dispatch(updateCard({
+        ...listaAtual,
+        itens: novosItens,
+        total,
+        adquiridos,
+        progresso
+      }));
     } catch (error) {
       console.error("Erro ao remover o item:", error);
       alert("Erro ao remover o item");

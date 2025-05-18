@@ -41,6 +41,9 @@ const ModalLista = ({ show, onClose }) => {
       titulo,
       descricao: descricao || "Sem descrição",
       imagem: null, // Inicialmente null, será preenchida após a conversão
+      adquiridos: 0,
+      total: 0,
+      progresso: 0,
       itens: [],
     };
 

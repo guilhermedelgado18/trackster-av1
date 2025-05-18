@@ -1,11 +1,11 @@
-import React from "react";
+import { updateCard } from "../../redux/cardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setModalItemData,
   resetModalItemData,
-  addItem,
   setMostrarModalItem,
   setItens,
+  setListaAtual,
 } from "../../redux/cardSlice";
 
 const ModalAdicionarItem = ({ show }) => {
@@ -16,21 +16,39 @@ const ModalAdicionarItem = ({ show }) => {
 
   const handleAdicionarItem = async (novoItem) => {
     try {
-      const novosItens = [...itens, novoItem];
+      // Adiciona o novo item à lista de itens
+      const novosItens = [...itens, { ...novoItem, adquirido: false }]; // Novo item é unchecked por padrão
 
+      // Recalcula o total e os adquiridos
+      const total = novosItens.length;
+      const adquiridos = novosItens.filter((item) => item.adquirido).length;
+
+      // Recalcula o progresso
+      const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
+
+      // Atualiza o backend
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ itens: novosItens }),
+        body: JSON.stringify({ itens: novosItens, total, adquiridos, progresso }),
       });
 
       if (!response.ok) {
         throw new Error("Erro ao adicionar o item no backend");
       }
 
+      // Atualiza o estado global
       dispatch(setItens(novosItens));
+      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso })); // Atualiza o progresso no estado global
+      dispatch(updateCard({
+        ...listaAtual,
+        itens: novosItens,
+        total,
+        adquiridos,
+        progresso
+      }));
     } catch (error) {
       console.error("Erro ao adicionar o item:", error);
       alert("Erro ao adicionar o item");

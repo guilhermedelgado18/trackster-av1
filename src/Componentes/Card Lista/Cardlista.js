@@ -1,15 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { updateCardProgress } from "../../redux/cardSlice";
 
-const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
-  const dispatch = useDispatch();
-  const progresso = useSelector((state) => state.card.progresso[id]) || { total: 0, adquiridos: 0 };
-
-  console.log("ID do Card (tipo):", id, typeof id);
-
-  const progressoPercentual = progresso.total > 0 ? (progresso.adquiridos / progresso.total) * 100 : 0;
+const Card = ({ id, titulo, descricao, imagem, adquiridos, total, progresso, onSolicitarExclusao }) => {
+  // Calcula o progresso percentual com base nos valores recebidos
 
   return (
     <div className="card d-flex flex-column" style={{ height: "420px", width: "100%" }}>
@@ -50,7 +43,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
 
         <div>
           <p>
-            <strong>Itens:</strong> {progresso.adquiridos}/{progresso.total}
+            <strong>Itens:</strong> {adquiridos}/{total}
           </p>
           <div
             className="progress-bar"
@@ -65,7 +58,7 @@ const Card = ({ id, titulo, descricao, imagem, onSolicitarExclusao }) => {
               style={{
                 display: "block",
                 height: "100%",
-                width: `${progressoPercentual}%`,
+                width: `${progresso}%`,
                 backgroundColor: "#dc3545",
                 borderRadius: "10px",
                 transition: "width 0.3s ease",

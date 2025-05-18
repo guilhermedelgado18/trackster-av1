@@ -1,4 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+export const fetchListas = createAsyncThunk("card/fetchListas", async (_, { dispatch }) => {
+  const response = await fetch("http://localhost:3001/listas");
+  if (!response.ok) {
+    throw new Error("Erro ao buscar as listas");
+  }
+  const listas = await response.json();
+
+  // Atualiza o progresso de cada lista no Redux
+  listas.forEach((lista) => {
+    dispatch(updateCardProgress({ id: lista.id, total: lista.total, adquiridos: lista.adquiridos }));
+  });
+
+  return listas;
+});
 
 const initialState = {
   cards: [], // Lista de cards
@@ -11,8 +26,6 @@ const initialState = {
   },
   progresso: {}, // Progresso de cada card (id -> { total, adquiridos })
   listaAtual: null, // Dados da lista atual
-  itens: [], // Itens da lista atual
-  mostrarModalItem: false, // Estado do modal de adicionar item
   itens: [], // Itens da lista atual
   mostrarModalItem: false, // Estado do modal de adicionar item
   modalItemData: {
@@ -52,6 +65,12 @@ const cardSlice = createSlice({
       const { id, total, adquiridos } = action.payload;
       state.progresso[id] = { total, adquiridos };
     },
+    updateCard: (state, action) => {
+      const updated = action.payload;
+      state.cards = state.cards.map(card =>
+        card.id === updated.id ? { ...card, ...updated } : card
+      );
+    },
     setListaAtual(state, action) {
       state.listaAtual = action.payload;
     },
@@ -83,6 +102,11 @@ const cardSlice = createSlice({
       state.modalItemData = { nome: "", descricao: "", imagem: null };
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchListas.fulfilled, (state, action) => {
+      state.cards = action.payload;
+    });
+  },
 });
 
 export const {
@@ -94,6 +118,7 @@ export const {
   setModalData,
   resetModalData,
   updateCardProgress,
+  updateCard,
   setListaAtual,
   setItens,
   addItem,

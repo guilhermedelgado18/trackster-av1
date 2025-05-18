@@ -16,6 +16,7 @@ import {
   deleteCard,
   setShowModal,
   setCardParaExcluir,
+  updateCardProgress,
 } from "./redux/cardSlice";
 
 function App() {
@@ -82,6 +83,29 @@ function App() {
     }
   };
 
+  const atualizarProgresso = async (id, total, adquiridos) => {
+    const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
+
+    try {
+      const response = await fetch(`http://localhost:3001/listas/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ total, adquiridos, progresso }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao atualizar o progresso no backend");
+      }
+
+      dispatch(updateCardProgress({ id, total, adquiridos }));
+    } catch (error) {
+      console.error("Erro ao atualizar o progresso:", error);
+      alert("Erro ao atualizar o progresso");
+    }
+  };
+
   return (
     <Routes>
       <Route
@@ -112,6 +136,7 @@ function App() {
                       key={card.id}
                       {...card}
                       onSolicitarExclusao={(id) => dispatch(setCardParaExcluir(id))}
+                      atualizarProgresso={atualizarProgresso} // Passa a função como prop
                     />
                   </div>
                 ))}
