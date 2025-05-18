@@ -2,11 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Card = ({ id, titulo, descricao, imagem, adquiridos, total, progresso, onSolicitarExclusao }) => {
-  // Calcula o progresso percentual com base nos valores recebidos
 
   return (
     <div className="card d-flex flex-column" style={{ height: "420px", width: "100%" }}>
-      {/* Imagem ou placeholder */}
       <div style={{ height: "170px", overflow: "hidden" }}>
         {imagem ? (
           <img

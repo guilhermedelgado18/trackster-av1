@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setModalData,
@@ -26,7 +25,7 @@ const ModalLista = ({ show, onClose }) => {
       }
 
       const savedLista = await response.json();
-      dispatch(addCard(savedLista)); // Atualiza o estado global com a nova lista
+      dispatch(addCard(savedLista));
     } catch (error) {
       console.error(error);
       alert("Erro ao salvar a lista");
@@ -40,7 +39,7 @@ const ModalLista = ({ show, onClose }) => {
       id: String(Date.now()),
       titulo,
       descricao: descricao || "Sem descrição",
-      imagem: null, // Inicialmente null, será preenchida após a conversão
+      imagem: null,
       adquiridos: 0,
       total: 0,
       progresso: 0,
@@ -50,14 +49,14 @@ const ModalLista = ({ show, onClose }) => {
     if (imagem) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        novaLista.imagem = reader.result; // Armazena a imagem como Base64
-        handleAdd(novaLista); // Chama a função para salvar no servidor
+        novaLista.imagem = reader.result;
+        handleAdd(novaLista);
         dispatch(resetModalData());
         dispatch(setShowModal(false));
       };
-      reader.readAsDataURL(imagem); // Converte a imagem para Base64
+      reader.readAsDataURL(imagem);
     } else {
-      handleAdd(novaLista); // Salva a lista sem imagem
+      handleAdd(novaLista);
       dispatch(resetModalData());
       dispatch(setShowModal(false));
     }
@@ -65,7 +64,6 @@ const ModalLista = ({ show, onClose }) => {
 
   return (
     <>
-      {/* Modal */}
       <div
         className={`modal fade ${show ? "show d-block" : "d-none"}`}
         tabIndex="-1"
@@ -128,10 +126,19 @@ const ModalLista = ({ show, onClose }) => {
                   type="file"
                   className="form-control"
                   id="imagem"
-                  accept="image/*"
-                  onChange={(e) =>
-                    dispatch(setModalData({ imagem: e.target.files[0] }))
-                  }
+                  accept="image/jpg, image/png, image/webp"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (
+                      file &&
+                      !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+                    ) {
+                      alert("Apenas imagens JPG, PNG ou WEBP são permitidas.");
+                      e.target.value = "";
+                      return;
+                    }
+                    dispatch(setModalData({ imagem: file }));
+                  }}
                 />
               </div>
             </div>
@@ -139,7 +146,10 @@ const ModalLista = ({ show, onClose }) => {
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={() => dispatch(setShowModal(false))}
+                onClick={() => {
+                  dispatch(resetModalData());
+                  dispatch(setShowModal(false))
+                }}
               >
                 Cancelar
               </button>
@@ -158,8 +168,7 @@ const ModalLista = ({ show, onClose }) => {
           </form>
         </div>
       </div>
-
-      {/* Backdrop manual (opcional se quiser reforçar) */}
+      
       {show && (
         <div
           className="modal-backdrop fade show"

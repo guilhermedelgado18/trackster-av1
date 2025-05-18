@@ -7,7 +7,6 @@ export const fetchListas = createAsyncThunk("card/fetchListas", async (_, { disp
   }
   const listas = await response.json();
 
-  // Atualiza o progresso de cada lista no Redux
   listas.forEach((lista) => {
     dispatch(updateCardProgress({ id: lista.id, total: lista.total, adquiridos: lista.adquiridos }));
   });
@@ -16,7 +15,7 @@ export const fetchListas = createAsyncThunk("card/fetchListas", async (_, { disp
 });
 
 const initialState = {
-  cards: [], // Lista de cards
+  cards: [],
   showModal: false,
   cardParaExcluir: null,
   modalData: {
@@ -24,10 +23,10 @@ const initialState = {
     descricao: "",
     imagem: null,
   },
-  progresso: {}, // Progresso de cada card (id -> { total, adquiridos })
-  listaAtual: null, // Dados da lista atual
-  itens: [], // Itens da lista atual
-  mostrarModalItem: false, // Estado do modal de adicionar item
+  progresso: {},
+  listaAtual: null, 
+  itens: [],
+  mostrarModalItem: false,
   modalItemData: {
     nome: "",
     descricao: "",
@@ -46,7 +45,7 @@ const cardSlice = createSlice({
       state.cards.push(action.payload);
     },
     deleteCard(state, action) {
-      console.log("Removendo card com ID:", action.payload); // Log para debug
+      console.log("Removendo card com ID:", action.payload);
       state.cards = state.cards.filter((card) => card.id !== action.payload);
     },
     setShowModal(state, action) {

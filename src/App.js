@@ -32,7 +32,7 @@ function App() {
         }
 
         const data = await response.json();
-        dispatch(setCards(data)); // Atualiza o estado global com as listas do servidor
+        dispatch(setCards(data));
       } catch (error) {
         console.error(error);
         alert("Erro ao buscar as listas");
@@ -57,7 +57,7 @@ function App() {
       }
 
       const savedLista = await response.json();
-      dispatch(addCard(savedLista)); // Atualiza o estado global com a nova lista
+      dispatch(addCard(savedLista));
     } catch (error) {
       console.error(error);
       alert("Erro ao salvar a lista");
@@ -66,7 +66,7 @@ function App() {
 
   const handleDelete = async (id) => {
     try {
-      console.log("ID recebido para exclusão:", id); // Log para debug
+      console.log("ID recebido para exclusão:", id);
       const response = await fetch(`http://localhost:3001/listas/${id}`, {
         method: "DELETE",
       });
@@ -75,8 +75,8 @@ function App() {
         throw new Error("Erro ao excluir a lista");
       }
 
-      dispatch(deleteCard(id)); // Atualiza o estado global
-      dispatch(setCardParaExcluir(null)); // Fecha o modal
+      dispatch(deleteCard(id));
+      dispatch(setCardParaExcluir(null));
     } catch (error) {
       console.error(error);
       alert("Erro ao excluir a lista");
@@ -120,13 +120,13 @@ function App() {
               <ModalLista
                 show={showModal}
                 onClose={() => dispatch(setShowModal(false))}
-                handleAdd={handleAdd} // Passa a função como prop
+                handleAdd={handleAdd}
               />
 
               <ModalExcluirLista
-                show={!!cardParaExcluir} // Exibe o modal se houver uma lista selecionada
-                onCancel={() => dispatch(setCardParaExcluir(null))} // Fecha o modal
-                onConfirm={() => handleDelete(cardParaExcluir)} // Confirma a exclusão
+                show={!!cardParaExcluir}
+                onCancel={() => dispatch(setCardParaExcluir(null))} 
+                onConfirm={() => handleDelete(cardParaExcluir)}
               />
 
               <div className="row g-4" id="listaCards">
@@ -136,7 +136,7 @@ function App() {
                       key={card.id}
                       {...card}
                       onSolicitarExclusao={(id) => dispatch(setCardParaExcluir(id))}
-                      atualizarProgresso={atualizarProgresso} // Passa a função como prop
+                      atualizarProgresso={atualizarProgresso}
                     />
                   </div>
                 ))}

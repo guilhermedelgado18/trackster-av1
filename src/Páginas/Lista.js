@@ -36,7 +36,6 @@ const Lista = () => {
         dispatch(setListaAtual(data));
         dispatch(setItens(data.itens || []));
 
-        // Atualiza o progresso no Redux
         const total = data.itens?.length || 0;
         const adquiridos = data.itens?.filter((item) => item.adquirido).length || 0;
         dispatch(updateCardProgress({ id: data.id, total, adquiridos }));
@@ -51,19 +50,15 @@ const Lista = () => {
 
   const handleToggleAdquirido = async (index) => {
     try {
-      // Atualiza o estado local dos itens
       const novosItens = itens.map((item, i) =>
         i === index ? { ...item, adquirido: !item.adquirido } : item
       );
 
-      // Recalcula o número de itens adquiridos
       const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
 
-      // Recalcula o progresso
       const progresso = listaAtual.total > 0 ? (adquiridos / listaAtual.total) * 100 : 0;
 
-      // Atualiza o backend
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
         method: "PATCH",
         headers: {
@@ -76,9 +71,8 @@ const Lista = () => {
         throw new Error("Erro ao atualizar o item no backend");
       }
 
-      // Atualiza o estado global
       dispatch(setItens(novosItens));
-      dispatch(setListaAtual({ ...listaAtual, adquiridos, progresso })); // Atualiza o progresso no estado global
+      dispatch(setListaAtual({ ...listaAtual, adquiridos, progresso }));
       dispatch(updateCard({
         ...listaAtual,
         itens: novosItens,
@@ -97,17 +91,14 @@ const Lista = () => {
     if (!confirmar) return;
 
     try {
-      // Remove o item do array
+
       const novosItens = itens.filter((_, i) => i !== index);
 
-      // Recalcula o total e os adquiridos
       const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
 
-      // Recalcula o progresso
       const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
 
-      // Atualiza o backend
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
         method: "PATCH",
         headers: {
@@ -120,9 +111,8 @@ const Lista = () => {
         throw new Error("Erro ao remover o item no backend");
       }
 
-      // Atualiza o estado global
       dispatch(setItens(novosItens));
-      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso })); // Atualiza o progresso no estado global
+      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso }));
       dispatch(updateCard({
         ...listaAtual,
         itens: novosItens,
@@ -190,7 +180,7 @@ const Lista = () => {
                 type="checkbox"
                 className="form-check-input me-2"
                 checked={item.adquirido}
-                onChange={() => handleToggleAdquirido(index)} // Chama a função ao clicar
+                onChange={() => handleToggleAdquirido(index)}
               />
 
               <img
@@ -227,7 +217,7 @@ const Lista = () => {
               
               <button
               className="btn btn-sm btn-outline-danger ms-2"
-              onClick={() => handleRemoverItem(index)} // Chama a função ao clicar
+              onClick={() => handleRemoverItem(index)}
             >
               Remover
             </button>

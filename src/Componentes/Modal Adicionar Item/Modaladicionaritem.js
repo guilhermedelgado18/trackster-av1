@@ -16,17 +16,14 @@ const ModalAdicionarItem = ({ show }) => {
 
   const handleAdicionarItem = async (novoItem) => {
     try {
-      // Adiciona o novo item à lista de itens
-      const novosItens = [...itens, { ...novoItem, adquirido: false }]; // Novo item é unchecked por padrão
+      
+      const novosItens = [...itens, { ...novoItem, adquirido: false }];
 
-      // Recalcula o total e os adquiridos
       const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
 
-      // Recalcula o progresso
       const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
 
-      // Atualiza o backend
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
         method: "PATCH",
         headers: {
@@ -39,9 +36,8 @@ const ModalAdicionarItem = ({ show }) => {
         throw new Error("Erro ao adicionar o item no backend");
       }
 
-      // Atualiza o estado global
       dispatch(setItens(novosItens));
-      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso })); // Atualiza o progresso no estado global
+      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso }));
       dispatch(updateCard({
         ...listaAtual,
         itens: novosItens,
@@ -136,9 +132,18 @@ const ModalAdicionarItem = ({ show }) => {
                   className="form-control"
                   id="imagemItem"
                   accept="image/*"
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (
+                      file &&
+                      !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+                    ) {
+                      alert("Apenas imagens JPG, PNG ou WEBP são permitidas.");
+                      e.target.value = "";
+                      return;
+                    }
                     dispatch(setModalItemData({ imagem: e.target.files[0] }))
-                  }
+                  }}
                 />
               </div>
             </div>
@@ -146,7 +151,10 @@ const ModalAdicionarItem = ({ show }) => {
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={() => dispatch(setMostrarModalItem(false))}
+                onClick={() => {
+                  dispatch(resetModalItemData());
+                  dispatch(setMostrarModalItem(false))
+                }}
               >
                 Cancelar
               </button>
