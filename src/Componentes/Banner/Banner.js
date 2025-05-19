@@ -1,3 +1,4 @@
+/*Pedro*/
 import './Banner.css'
 
 const Banner = () => {

@@ -1,3 +1,4 @@
+/*Pedro*/
 const BotaoAdicionar = ({ onClick }) => {
     
     return (
