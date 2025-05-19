@@ -1,4 +1,4 @@
-import React from "react";
+import './Cardlista.css';
 import { Link } from "react-router-dom";
 
 const Card = ({ id, titulo, descricao, imagem, adquiridos, total, progresso, onSolicitarExclusao }) => {
@@ -67,11 +67,7 @@ const Card = ({ id, titulo, descricao, imagem, adquiridos, total, progresso, onS
             <Link
               to={`/lista/${id}`}
               className="btn"
-              style={{
-                backgroundColor: "white",
-                color: "#dc3545",
-                border: "1px solid #dc3545",
-              }}
+              id="btn-ver-lista"
             >
               Ver Lista
             </Link>
