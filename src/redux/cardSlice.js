@@ -32,6 +32,8 @@ const initialState = {
     descricao: "",
     imagem: null,
   },
+  itemEditando: null,
+  mostrarModalEditarItem: false,
 };
 
 const cardSlice = createSlice({
@@ -100,6 +102,12 @@ const cardSlice = createSlice({
     resetModalItemData(state) {
       state.modalItemData = { nome: "", descricao: "", imagem: null };
     },
+    setItemEditando(state, action) {
+      state.itemEditando = action.payload;
+    },
+    setMostrarModalEditarItem(state, action) {
+      state.mostrarModalEditarItem = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchListas.fulfilled, (state, action) => {
@@ -125,6 +133,8 @@ export const {
   removeItem,
   setMostrarModalItem,
   setModalItemData,
-  resetModalItemData
+  resetModalItemData,
+  setItemEditando,
+  setMostrarModalEditarItem
 } = cardSlice.actions;
 export default cardSlice.reducer;
