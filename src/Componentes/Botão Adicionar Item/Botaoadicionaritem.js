@@ -1,4 +1,3 @@
-/*Guilherme*/
 const BotaoAdicionarItem = ({ onClick }) => {
     
     return (

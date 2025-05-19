@@ -1,4 +1,3 @@
-/*Guilherme*/
 import { updateCard } from "../../redux/cardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {

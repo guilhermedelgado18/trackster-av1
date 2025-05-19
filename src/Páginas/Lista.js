@@ -1,4 +1,3 @@
-/*Guilherme*/
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import './Lista.css';
