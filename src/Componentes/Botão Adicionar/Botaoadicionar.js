@@ -6,7 +6,6 @@ const BotaoAdicionar = ({ onClick }) => {
         <>
         <button
             className="btn btn-success mb-4"
-            id="btn-add"
             onClick={onClick}
             style={{
                 backgroundColor: '#dc3545',
