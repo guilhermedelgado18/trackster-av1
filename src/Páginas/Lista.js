@@ -6,11 +6,14 @@ import BotaoAdicionarItem from "../Componentes/Botão Adicionar Item/Botaoadicio
 import ModalAdicionarItem from "../Componentes/Modal Adicionar Item/Modaladicionaritem";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCard } from "../redux/cardSlice";
+import ModalEditarItem from "../Componentes/Modal Editar Item/ModalEditarItem";
 import {
   setListaAtual,
   setItens,
   setMostrarModalItem,
   updateCardProgress,
+  setItemEditando,
+  setMostrarModalEditarItem,
 } from "../redux/cardSlice";
 
 const Lista = () => {
@@ -22,6 +25,8 @@ const Lista = () => {
     listaAtual: state.card.listaAtual,
     itens: state.card.itens,
     mostrarModalItem: state.card.mostrarModalItem,
+    itemEditando: state.card.itemEditando,
+    mostrarModalEditarItem: state.card.mostrarModalEditarItem,
   }));
 
   useEffect(() => {
@@ -214,6 +219,17 @@ const Lista = () => {
                   value={item.descricao || "Sem descrição"}
                 ></textarea>
               </div>
+
+              <button
+                className="btn btn-sm btn-secondary ms-2"
+                id="btn-editar"
+                onClick={() => {
+                  dispatch(setItemEditando({ ...item, index }));
+                  dispatch(setMostrarModalEditarItem(true));
+                }}
+              >
+                Editar
+              </button>
               
               <button
               className="btn btn-sm btn-outline-danger ms-2"
@@ -224,6 +240,8 @@ const Lista = () => {
             </li>
           ))}
         </ul>
+
+        <ModalEditarItem/>
       </div>
     </div>
   );

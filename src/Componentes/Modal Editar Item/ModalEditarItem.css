@@ -1,0 +1,9 @@
+#btn-salvar-editar-item {
+    background-color: var(--vermelho);
+    border-color: var(--vermelho);
+}
+
+#btn-salvar-editar-item:hover {
+    background-color: var(--vermelho-rover);
+    border-color: var(--vermelho-rover);
+}

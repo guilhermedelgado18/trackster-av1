@@ -29,3 +29,15 @@ input.form-check-input.me-2:checked {
   border-color: #dc3545;
   transition: box-shadow 0.1s ease-out;
 }
+
+#btn-editar {
+    color: #6c757d;
+    border-color: #6c757d;
+    background-color: white;
+}
+
+#btn-editar:hover {
+    color: white;
+    background-color: #6c757d;
+}
+
