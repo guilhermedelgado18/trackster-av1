@@ -131,16 +131,24 @@ function App() {
               />
 
               <div className="row g-4" id="listaCards">
-                {cards.map((card) => (
-                  <div key={card.id} className="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <Cardlista
-                      key={card.id}
-                      {...card}
-                      onSolicitarExclusao={(id) => dispatch(setCardParaExcluir(id))}
-                      atualizarProgresso={atualizarProgresso}
-                    />
+                {cards.length === 0 ? (
+                  <div className="w-100 text-center text-muted py-5" style={{ fontSize: "1.3rem", alignItems: "center", display: "flex", flexDirection: "column" }}>
+                    <span style={{ fontSize: "5rem", color: "#a3a3a3"}}>:(</span> <br />
+                    <span style={{ color: "#a3a3a3"}}>Parece que não há nada para mostrar aqui.<br />
+                    Clique no botão + para criar uma lista</span>
                   </div>
-                ))}
+                ) : (
+                  cards.map((card) => (
+                    <div key={card.id} className="col-6 col-md-4 col-lg-3 col-xxl-2">
+                      <Cardlista
+                        key={card.id}
+                        {...card}
+                        onSolicitarExclusao={(id) => dispatch(setCardParaExcluir(id))}
+                        atualizarProgresso={atualizarProgresso}
+                      />
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

@@ -63,6 +63,7 @@ const ModalAdicionarItem = ({ show }) => {
         descricao: descricao.trim(),
         imagem: imagem ? reader.result : null,
         adquirido: false,
+        comentarios: [],
       };
       await handleAdicionarItem(novoItem);
       dispatch(resetModalItemData());

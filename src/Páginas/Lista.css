@@ -1,6 +1,8 @@
 :root {
     --vermelho: #dc3545;
     --vermelho-rover: #b02a37;
+    --cinza: #6c757d;
+    --cinza-rover: #565e64;
 }
 
 #btn-voltar {
@@ -41,3 +43,48 @@ input.form-check-input.me-2:checked {
     background-color: #6c757d;
 }
 
+#icone-editar-item {
+    color: #6c757d;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#icone-editar-item:hover {
+    color: #565e64;
+}
+
+#icone-remover-item {
+    color: var(--vermelho);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#icone-remover-item:hover {
+    color: var(--vermelho-rover);
+}
+
+#icone-comentar-item {
+    color: #0066da;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+#icone-comentar-item:hover {
+    color: #0058bd;
+}
+
+#caixa-texto-item {
+
+    border: none;
+    resize: none;
+    outline: none;
+    width: 100%;
+    min-width: 0;
+    cursor: pointer;
+    background-color: "white";
+                        
+}
+
+#caixa-texto-item:focus {
+    box-shadow: none;
+    background-color: #f0f0f0;
+}

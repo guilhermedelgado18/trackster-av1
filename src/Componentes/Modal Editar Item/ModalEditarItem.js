@@ -6,15 +6,17 @@ import {
   setItens,
   setListaAtual,
   updateCard,
+  setItemSelecionado,
 } from "../../redux/cardSlice";
 
 const ModalEditarItem = () => {
   const dispatch = useDispatch();
-  const { mostrarModalEditarItem, itemEditando, itens, listaAtual } = useSelector((state) => ({
+  const { mostrarModalEditarItem, itemEditando, itens, listaAtual, itemSelecionado} = useSelector((state) => ({
     mostrarModalEditarItem: state.card.mostrarModalEditarItem,
     itemEditando: state.card.itemEditando,
     itens: state.card.itens,
     listaAtual: state.card.listaAtual,
+    itemSelecionado: state.card.itemSelecionado,
   }));
 
   if (!mostrarModalEditarItem || !itemEditando) return null;
@@ -41,6 +43,12 @@ const ModalEditarItem = () => {
       adquiridos,
       progresso
     }));
+
+    // Atualize o preview se o item editado for o selecionado
+    if (itemSelecionado && itemSelecionado.id === itemEditando.id) {
+      dispatch(setItemSelecionado(itemEditando));
+    }
+
     dispatch(setMostrarModalEditarItem(false));
     dispatch(setItemEditando(null));
   };
@@ -70,6 +78,7 @@ const ModalEditarItem = () => {
               className="form-control mb-2"
               maxLength="150"
               value={itemEditando.descricao || ""}
+              style={{resize: "none"}}
               onChange={e => dispatch(setItemEditando({ ...itemEditando, descricao: e.target.value }))}
               placeholder="Nova Descrição"
             />
