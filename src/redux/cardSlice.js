@@ -37,6 +37,10 @@ const initialState = {
   itemSelecionado: null,
   comentariosModalAberto: false,
   itemParaComentar: null,
+  modalAvaliacaoAberto: false,
+  itemAvaliando: null,
+  notaAvaliacao: 0,
+  comentarioAvaliacao: "",
 };
 
 const cardSlice = createSlice({
@@ -120,6 +124,24 @@ const cardSlice = createSlice({
     setItemParaComentar(state, action) {
       state.itemParaComentar = action.payload;
     },
+    setModalAvaliacaoAberto(state, action) {
+      state.modalAvaliacaoAberto = action.payload;
+    },
+    setItemAvaliando(state, action) {
+      state.itemAvaliando = action.payload;
+    },
+    setNotaAvaliacao(state, action) {
+      state.notaAvaliacao = action.payload;
+    },
+    setComentarioAvaliacao(state, action) {
+      state.comentarioAvaliacao = action.payload;
+    },
+    resetAvaliacao(state) {
+      state.notaAvaliacao = 0;
+      state.comentarioAvaliacao = "";
+      state.itemAvaliando = null;
+      state.modalAvaliacaoAberto = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchListas.fulfilled, (state, action) => {
@@ -151,5 +173,10 @@ export const {
   setItemSelecionado,
   setComentariosModalAberto,
   setItemParaComentar,
+  setModalAvaliacaoAberto,
+  setItemAvaliando,
+  setNotaAvaliacao,
+  setComentarioAvaliacao,
+  resetAvaliacao,
 } = cardSlice.actions;
 export default cardSlice.reducer;

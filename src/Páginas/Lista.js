@@ -1,17 +1,19 @@
-import { useEffect } from "react";
+import { useEffect} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import './Lista.css';
 import Banner from "../Componentes/Banner/Banner";
 import BotaoAdicionarItem from "../Componentes/Botão Adicionar Item/Botaoadicionaritem";
 import ModalAdicionarItem from "../Componentes/Modal Adicionar Item/Modaladicionaritem";
 import { useDispatch, useSelector } from "react-redux";
-import { setComentariosModalAberto, setItemParaComentar, updateCard } from "../redux/cardSlice";
+import { setComentariosModalAberto, setItemParaComentar, setModalAvaliacaoAberto, updateCard } from "../redux/cardSlice";
 import ModalEditarItem from "../Componentes/Modal Editar Item/ModalEditarItem";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import ModalComentarios from "../Componentes/Modal Comentarios/Modalcomentarios";
+import ModalAvaliacao from "../Componentes/Modal Avaliações/Modalavaliacao";
+import AvaliacaoEstrelas from "../Componentes/Estrelas/Estrelas";
 import {
   setListaAtual,
   setItens,
@@ -20,6 +22,7 @@ import {
   setItemEditando,
   setMostrarModalEditarItem,
   setItemSelecionado,
+  setItemAvaliando,
 } from "../redux/cardSlice";
 
 const Lista = () => {
@@ -35,6 +38,10 @@ const Lista = () => {
     mostrarModalEditarItem: state.card.mostrarModalEditarItem,
     itemSelecionado: state.card.itemSelecionado,
   }));
+
+  const mediaAvaliacao = itemSelecionado && itemSelecionado.avaliacoes && itemSelecionado.avaliacoes.length > 0
+    ? (itemSelecionado.avaliacoes.reduce((acc, a) => acc + a.nota, 0) / itemSelecionado.avaliacoes.length)
+    : 0;
 
   useEffect(() => {
     const fetchLista = async () => {
@@ -328,14 +335,41 @@ const Lista = () => {
                   )}
                 </div>
                 <p 
-                  style={{marginBottom: "0", color: "#0066da", cursor: "pointer"}}
                   onClick={() => {
                     dispatch(setItemParaComentar(itemSelecionado));
                     dispatch(setComentariosModalAberto(true));
                   }}
-                  >Comentários<span>({itemSelecionado.comentarios ? itemSelecionado.comentarios.length : 0})</span>
+                  ><span
+                    style={{
+                      marginBottom: "20px", 
+                      color: "#0066da", 
+                      cursor: "pointer", 
+                      display: "inline"}}>
+                        Comentários({itemSelecionado.comentarios ? itemSelecionado.comentarios.length : 0})
+                  </span>
                 </p>
 
+                <div style={{ display: "flex", alignItems: "center", marginBottom: 0, gap: 4}}>
+                  <AvaliacaoEstrelas
+                    media={mediaAvaliacao}
+                    onClick={() => {
+                      dispatch(setItemAvaliando(itemSelecionado));
+                      dispatch(setModalAvaliacaoAberto(true))
+                    }}
+                  />
+                  <span 
+                    style={{cursor: "pointer", marginLeft: 0, fontWeight: "bold" }}
+                    onClick={() => {
+                      dispatch(setItemAvaliando(itemSelecionado));
+                      dispatch(setModalAvaliacaoAberto(true))
+                    }}  
+                  >
+                    ({itemSelecionado.avaliacoes ? itemSelecionado.avaliacoes.length : 0})
+                  </span>
+                </div>
+                
+                <ModalAvaliacao
+                />
               </div>
             ) : (
               <div

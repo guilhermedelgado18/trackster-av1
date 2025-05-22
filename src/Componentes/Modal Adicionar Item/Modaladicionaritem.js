@@ -64,6 +64,7 @@ const ModalAdicionarItem = ({ show }) => {
         imagem: imagem ? reader.result : null,
         adquirido: false,
         comentarios: [],
+        avaliacoes: [],
       };
       await handleAdicionarItem(novoItem);
       dispatch(resetModalItemData());
