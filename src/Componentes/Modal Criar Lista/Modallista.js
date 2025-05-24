@@ -5,11 +5,12 @@ import {
   resetModalData,
   setShowModal,
   addCard,
-} from "../../redux/cardSlice";
+} from "../../redux/listaSlice";
 
 const ModalLista = ({ show, onClose }) => {
   const dispatch = useDispatch();
-  const { titulo, descricao, imagem } = useSelector((state) => state.card.modalData);
+  // Agora o state está em lista.modalData
+  const { titulo, descricao, imagem } = useSelector((state) => state.lista.modalData);
 
   const handleAdd = async (novaLista) => {
     try {
@@ -127,7 +128,7 @@ const ModalLista = ({ show, onClose }) => {
                   type="file"
                   className="form-control"
                   id="imagem"
-                  accept="image/jpg, image/png, image/webp"
+                  accept="image/jpeg, image/png, image/webp"
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (

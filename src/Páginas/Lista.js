@@ -1,43 +1,43 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import './Lista.css';
 import Banner from "../Componentes/Banner/Banner";
 import BotaoAdicionarItem from "../Componentes/Botão Adicionar Item/Botaoadicionaritem";
 import ModalAdicionarItem from "../Componentes/Modal Adicionar Item/Modaladicionaritem";
 import { useDispatch, useSelector } from "react-redux";
-import { setComentariosModalAberto, setItemParaComentar, setModalAvaliacaoAberto, updateCard } from "../redux/cardSlice";
 import ModalEditarItem from "../Componentes/Modal Editar Item/ModalEditarItem";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { faComment } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash, faComment } from "@fortawesome/free-solid-svg-icons";
 import ModalComentarios from "../Componentes/Modal Comentarios/Modalcomentarios";
 import ModalAvaliacao from "../Componentes/Modal Avaliações/Modalavaliacao";
 import AvaliacaoEstrelas from "../Componentes/Estrelas/Estrelas";
 import {
   setListaAtual,
+  updateCardProgress,
+  updateCard,
+} from "../redux/listaSlice";
+import {
   setItens,
   setMostrarModalItem,
-  updateCardProgress,
   setItemEditando,
   setMostrarModalEditarItem,
   setItemSelecionado,
   setItemAvaliando,
-} from "../redux/cardSlice";
+  setComentariosModalAberto,
+  setItemParaComentar,
+  setModalAvaliacaoAberto,
+} from "../redux/itemSlice";
 
 const Lista = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { listaAtual, itens, mostrarModalItem, itemSelecionado } = useSelector((state) => ({
-    listaAtual: state.card.listaAtual,
-    itens: state.card.itens,
-    mostrarModalItem: state.card.mostrarModalItem,
-    itemEditando: state.card.itemEditando,
-    mostrarModalEditarItem: state.card.mostrarModalEditarItem,
-    itemSelecionado: state.card.itemSelecionado,
-  }));
+  // Slices separados: lista e item
+  const listaAtual = useSelector((state) => state.lista.listaAtual);
+  const itens = useSelector((state) => state.item.itens);
+  const mostrarModalItem = useSelector((state) => state.item.mostrarModalItem);
+  const itemSelecionado = useSelector((state) => state.item.itemSelecionado);
 
   const mediaAvaliacao = itemSelecionado && itemSelecionado.avaliacoes && itemSelecionado.avaliacoes.length > 0
     ? (itemSelecionado.avaliacoes.reduce((acc, a) => acc + a.nota, 0) / itemSelecionado.avaliacoes.length)
@@ -64,6 +64,8 @@ const Lista = () => {
       }
     };
 
+    // Sempre limpa o item selecionado ao trocar de lista
+    dispatch(setItemSelecionado(null));
     fetchLista();
   }, [id, dispatch]);
 
@@ -114,12 +116,10 @@ const Lista = () => {
     if (!confirmar) return;
 
     try {
-
       const novosItens = itens.filter((_, i) => i !== index);
 
       const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
-
       const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
 
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
@@ -211,7 +211,6 @@ const Lista = () => {
                     className="form-check-input me-2"
                     checked={item.adquirido}
                     onChange={() => handleToggleAdquirido(index)}
-                    // Não seleciona o item ao clicar na checkbox
                   />
 
                   <img
@@ -349,7 +348,7 @@ const Lista = () => {
                   </span>
                 </p>
 
-                <div style={{ display: "flex", alignItems: "center", marginBottom: 0, gap: 4}}>
+                <div style={{ display: "flex", alignItems: "center", marginBottom: 0, gap: 4 }}>
                   <AvaliacaoEstrelas
                     media={mediaAvaliacao}
                     onClick={() => {
@@ -357,19 +356,12 @@ const Lista = () => {
                       dispatch(setModalAvaliacaoAberto(true))
                     }}
                   />
-                  <span 
-                    style={{cursor: "pointer", marginLeft: 0, fontWeight: "bold" }}
-                    onClick={() => {
-                      dispatch(setItemAvaliando(itemSelecionado));
-                      dispatch(setModalAvaliacaoAberto(true))
-                    }}  
-                  >
+                  <span style={{ marginLeft: 8, fontWeight: "bold" }}>
                     ({itemSelecionado.avaliacoes ? itemSelecionado.avaliacoes.length : 0})
                   </span>
                 </div>
                 
-                <ModalAvaliacao
-                />
+                <ModalAvaliacao />
               </div>
             ) : (
               <div
@@ -392,8 +384,8 @@ const Lista = () => {
           </div>
         </div>
 
-        <ModalEditarItem/>
-        <ModalComentarios/>
+        <ModalEditarItem />
+        <ModalComentarios />
       </div>
     </div>
   );

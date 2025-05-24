@@ -6,7 +6,7 @@ import {
   setNotaAvaliacao,
   setComentarioAvaliacao,
   resetAvaliacao,
-} from "../../redux/cardSlice";
+} from "../../redux/itemSlice"; // <-- agora importa do itemSlice
 
 const ModalAvaliacao = () => {
   const dispatch = useDispatch();
@@ -18,12 +18,12 @@ const ModalAvaliacao = () => {
     itens,
     listaAtual,
   } = useSelector(state => ({
-    modalAvaliacaoAberto: state.card.modalAvaliacaoAberto,
-    itemAvaliando: state.card.itemAvaliando,
-    notaAvaliacao: state.card.notaAvaliacao,
-    comentarioAvaliacao: state.card.comentarioAvaliacao,
-    itens: state.card.itens,
-    listaAtual: state.card.listaAtual,
+    modalAvaliacaoAberto: state.item.modalAvaliacaoAberto,
+    itemAvaliando: state.item.itemAvaliando,
+    notaAvaliacao: state.item.notaAvaliacao,
+    comentarioAvaliacao: state.item.comentarioAvaliacao,
+    itens: state.item.itens,
+    listaAtual: state.lista.listaAtual,
   }));
 
   if (!modalAvaliacaoAberto || !itemAvaliando) return null;

@@ -4,20 +4,20 @@ import {
   setItemEditando,
   setMostrarModalEditarItem,
   setItens,
+  setItemSelecionado,
+} from "../../redux/itemSlice";
+import {
   setListaAtual,
   updateCard,
-  setItemSelecionado,
-} from "../../redux/cardSlice";
+} from "../../redux/listaSlice";
 
 const ModalEditarItem = () => {
   const dispatch = useDispatch();
-  const { mostrarModalEditarItem, itemEditando, itens, listaAtual, itemSelecionado} = useSelector((state) => ({
-    mostrarModalEditarItem: state.card.mostrarModalEditarItem,
-    itemEditando: state.card.itemEditando,
-    itens: state.card.itens,
-    listaAtual: state.card.listaAtual,
-    itemSelecionado: state.card.itemSelecionado,
-  }));
+  const mostrarModalEditarItem = useSelector((state) => state.item.mostrarModalEditarItem);
+  const itemEditando = useSelector((state) => state.item.itemEditando);
+  const itens = useSelector((state) => state.item.itens);
+  const listaAtual = useSelector((state) => state.lista.listaAtual);
+  const itemSelecionado = useSelector((state) => state.item.itemSelecionado);
 
   if (!mostrarModalEditarItem || !itemEditando) return null;
 

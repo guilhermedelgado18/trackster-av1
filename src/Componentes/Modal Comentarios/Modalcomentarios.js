@@ -5,17 +5,15 @@ import {
   setItemParaComentar,
   setItens,
   setItemSelecionado,
-} from "../../redux/cardSlice";
+} from "../../redux/itemSlice"; // <-- agora importa do itemSlice
 
 const ModalComentarios = () => {
   const dispatch = useDispatch();
-  const { comentariosModalAberto, itemParaComentar, itens, listaAtual, itemSelecionado } = useSelector((state) => ({
-    comentariosModalAberto: state.card.comentariosModalAberto,
-    itemParaComentar: state.card.itemParaComentar,
-    itens: state.card.itens,
-    listaAtual: state.card.listaAtual,
-    itemSelecionado: state.card.itemSelecionado, // <-- adicione aqui
-  }));
+  const comentariosModalAberto = useSelector((state) => state.item.comentariosModalAberto);
+  const itemParaComentar = useSelector((state) => state.item.itemParaComentar);
+  const itens = useSelector((state) => state.item.itens);
+  const listaAtual = useSelector((state) => state.lista.listaAtual);
+  const itemSelecionado = useSelector((state) => state.item.itemSelecionado);
 
   const [novoComentario, setNovoComentario] = useState("");
 
@@ -79,8 +77,7 @@ const ModalComentarios = () => {
 
     const anos = Math.floor(dias / 365);
     return `há ${anos} ano${anos !== 1 ? 's' : ''}`;
-}
-
+  }
 
   return (
     <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
@@ -110,7 +107,6 @@ const ModalComentarios = () => {
               value={novoComentario}
               onChange={e => setNovoComentario(e.target.value)}
               rows={2}
-
               style={{ resize: "none" }}
               required
             />

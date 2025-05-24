@@ -1,27 +1,24 @@
-import { updateCard } from "../../redux/cardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setModalItemData,
   resetModalItemData,
   setMostrarModalItem,
   setItens,
-  setListaAtual,
-} from "../../redux/cardSlice";
+} from "../../redux/itemSlice";
+import { setListaAtual, updateCard } from "../../redux/listaSlice";
 
 const ModalAdicionarItem = ({ show }) => {
   const dispatch = useDispatch();
-  const { nome, descricao, imagem } = useSelector((state) => state.card.modalItemData);
-  const itens = useSelector((state) => state.card.itens);
-  const listaAtual = useSelector((state) => state.card.listaAtual);
+  const { nome, descricao, imagem } = useSelector((state) => state.item.modalItemData);
+  const itens = useSelector((state) => state.item.itens);
+  const listaAtual = useSelector((state) => state.lista.listaAtual);
 
   const handleAdicionarItem = async (novoItem) => {
     try {
-      
       const novosItens = [...itens, { ...novoItem, adquirido: false }];
 
       const total = novosItens.length;
       const adquiridos = novosItens.filter((item) => item.adquirido).length;
-
       const progresso = total > 0 ? (adquiridos / total) * 100 : 0;
 
       const response = await fetch(`http://localhost:3001/listas/${listaAtual.id}`, {
@@ -37,7 +34,7 @@ const ModalAdicionarItem = ({ show }) => {
       }
 
       dispatch(setItens(novosItens));
-      dispatch(setListaAtual({ ...listaAtual, total, adquiridos, progresso }));
+      dispatch(setListaAtual({ ...listaAtual, itens: novosItens, total, adquiridos, progresso }));
       dispatch(updateCard({
         ...listaAtual,
         itens: novosItens,
@@ -133,7 +130,7 @@ const ModalAdicionarItem = ({ show }) => {
                   type="file"
                   className="form-control"
                   id="imagemItem"
-                  accept="image/*"
+                  accept="image/jpeg, image/png, image/webp"
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (
@@ -144,7 +141,7 @@ const ModalAdicionarItem = ({ show }) => {
                       e.target.value = "";
                       return;
                     }
-                    dispatch(setModalItemData({ imagem: e.target.files[0] }))
+                    dispatch(setModalItemData({ imagem: file }))
                   }}
                 />
               </div>

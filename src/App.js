@@ -18,11 +18,12 @@ import {
   setShowModal,
   setCardParaExcluir,
   updateCardProgress,
-} from "./redux/cardSlice";
+} from "./redux/listaSlice";
 
 function App() {
   const dispatch = useDispatch();
-  const { cards, showModal, cardParaExcluir } = useSelector((state) => state.card);
+  // Agora os states vêm do slice 'lista'
+  const { cards, showModal, cardParaExcluir } = useSelector((state) => state.lista);
 
   useEffect(() => {
     const fetchListas = async () => {
@@ -67,7 +68,6 @@ function App() {
 
   const handleDelete = async (id) => {
     try {
-      console.log("ID recebido para exclusão:", id);
       const response = await fetch(`http://localhost:3001/listas/${id}`, {
         method: "DELETE",
       });
@@ -116,20 +116,16 @@ function App() {
             <Banner />
             <div className="container-fluid">
               <BotaoAdicionar onClick={() => dispatch(setShowModal(true))} />
-              <ModalLista show={showModal} />
-
               <ModalLista
                 show={showModal}
                 onClose={() => dispatch(setShowModal(false))}
                 handleAdd={handleAdd}
               />
-
               <ModalExcluirLista
                 show={!!cardParaExcluir}
-                onCancel={() => dispatch(setCardParaExcluir(null))} 
+                onCancel={() => dispatch(setCardParaExcluir(null))}
                 onConfirm={() => handleDelete(cardParaExcluir)}
               />
-
               <div className="row g-4" id="listaCards">
                 {cards.length === 0 ? (
                   <div className="w-100 text-center text-muted py-5" style={{ fontSize: "1.3rem", alignItems: "center", display: "flex", flexDirection: "column" }}>
